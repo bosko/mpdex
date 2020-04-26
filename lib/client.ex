@@ -5,13 +5,12 @@ defmodule Mpdex.Client do
 
     case connect(host, port) do
       {:ok, socket, _version} ->
-        :gen_tcp.send(socket, cmd)
-        :gen_tcp.send(socket, "\n")
+        :gen_tcp.send(socket, "#{cmd}\n")
 
-        case :gen_tcp.recv(socket, 0) do
-          {:ok, res} ->
+        case recv(socket) do
+          {:ok, response} ->
             :gen_tcp.close(socket)
-            {:ok, :binary.list_to_bin(res)}
+            {:ok, response}
 
           {:error, _} ->
             :gen_tcp.close(socket)
@@ -35,6 +34,21 @@ defmodule Mpdex.Client do
       end
     else
       _ -> {:error, nil}
+    end
+  end
+
+  defp recv(socket, response \\ '') do
+    case :gen_tcp.recv(socket, 0) do
+      {:ok, res} ->
+        msg = response ++ res
+        if  (length(msg) >= 3) && (Enum.slice(msg, length(msg) - 3, 3) == 'OK\n') do
+          {:ok, :binary.list_to_bin(msg)}
+        else
+          recv(socket, msg)
+        end
+
+      {:error, _} ->
+        {:error, nil}
     end
   end
 end
