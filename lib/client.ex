@@ -12,13 +12,13 @@ defmodule Mpdex.Client do
             :gen_tcp.close(socket)
             {:ok, response}
 
-          {:error, _} ->
+          {:error, err} ->
             :gen_tcp.close(socket)
-            {:error, nil}
+            {:error, err}
         end
 
-      {:error, _} ->
-        {:error, nil}
+      {:error, err} ->
+        {:error, err}
     end
   end
 
@@ -33,7 +33,7 @@ defmodule Mpdex.Client do
           {:error, nil}
       end
     else
-      _ -> {:error, nil}
+      err -> err
     end
   end
 
@@ -41,14 +41,24 @@ defmodule Mpdex.Client do
     case :gen_tcp.recv(socket, 0) do
       {:ok, res} ->
         msg = response ++ res
-        if  (length(msg) >= 3) && (Enum.slice(msg, length(msg) - 3, 3) == 'OK\n') do
-          {:ok, :binary.list_to_bin(msg)}
-        else
-          recv(socket, msg)
+
+        cond do
+          List.starts_with?(msg, 'ACK ') ->
+            {:error,
+             Regex.named_captures(
+               ~r/\[(?<err_num>.+)@(?<offset>.+)\] \{(?<cmd>.+)\} (?<err_msg>.+)/,
+               :binary.list_to_bin(msg)
+             )}
+
+          length(msg) >= 3 && Enum.slice(msg, length(msg) - 3, 3) == 'OK\n' ->
+            {:ok, :binary.list_to_bin(msg)}
+
+          true ->
+            recv(socket, msg)
         end
 
-      {:error, _} ->
-        {:error, nil}
+      {:error, err} ->
+        {:error, err}
     end
   end
 end
