@@ -25,8 +25,8 @@ defmodule Mpdex.Playlists do
     end
   end
 
-  def get(host, port, name) do
-    case Mpdex.Client.send("listplaylistinfo #{name}", host: host, port: port) do
+  def get(list_name, host, port) do
+    case Mpdex.Client.send("listplaylistinfo #{list_name}", host: host, port: port) do
       {:ok, content} ->
         [_ | raw_songs] = String.split(content, "file: ")
 
@@ -44,6 +44,16 @@ defmodule Mpdex.Playlists do
 
       _ ->
         []
+    end
+  end
+
+  def load(list_name, host, port) do
+    case Mpdex.Client.send("load #{list_name}", host: host, port: port) do
+      {:ok, _} ->
+        {:ok, :loaded}
+
+      {:error, err} ->
+        {:error, err}
     end
   end
 
