@@ -48,9 +48,41 @@ defmodule Mpdex.Playlists do
   end
 
   def load(list_name, host, port) do
-    case Mpdex.Client.send("load #{list_name}", host: host, port: port) do
-      {:ok, _} ->
-        {:ok, :loaded}
+    send_simple_cmd("load #{list_name}", host, port)
+  end
+
+  def add_url_to_list(list_name, uri, host, port) do
+    send_simple_cmd("playlistadd #{list_name} #{uri}", host, port)
+  end
+
+  def clear(list_name, host, port) do
+    send_simple_cmd("playlistclear #{list_name}", host, port)
+  end
+
+  def delete_song_at(list_name, position, host, port) do
+    send_simple_cmd("playlistdelete #{list_name} #{position}", host, port)
+  end
+
+  def move_song(list_name, from, to, host, port) do
+    send_simple_cmd("playlistmove #{list_name} #{from} #{to}", host, port)
+  end
+
+  def save_queue_to_list(list_name, host, port) do
+    send_simple_cmd("save #{list_name}", host, port)
+  end
+
+  def rename(list_name, new_name, host, port) do
+    send_simple_cmd("rename #{list_name} #{new_name}", host, port)
+  end
+
+  def remove(list_name, host, port) do
+    send_simple_cmd("rm #{list_name}", host, port)
+  end
+
+  defp send_simple_cmd(cmd, host, port) do
+    case Mpdex.Client.send(cmd, host: host, port: port) do
+      {:ok, res} ->
+        {:ok, res}
 
       {:error, err} ->
         {:error, err}
