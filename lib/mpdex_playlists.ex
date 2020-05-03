@@ -4,7 +4,7 @@ defmodule Mpdex.Playlists do
   """
 
   def list(host, port) do
-    case Mpdex.Client.send("listplaylists", host: host, port: port) do
+    case client().send("listplaylists", host: host, port: port) do
       {:ok, raw_lists} ->
         raw_lists
         |> String.split("\n")
@@ -26,7 +26,7 @@ defmodule Mpdex.Playlists do
   end
 
   def get(list_name, host, port) do
-    case Mpdex.Client.send("listplaylistinfo #{list_name}", host: host, port: port) do
+    case client().send("listplaylistinfo #{list_name}", host: host, port: port) do
       {:ok, content} ->
         [_ | raw_songs] = String.split(content, "file: ")
 
@@ -80,7 +80,7 @@ defmodule Mpdex.Playlists do
   end
 
   defp send_simple_cmd(cmd, host, port) do
-    case Mpdex.Client.send(cmd, host: host, port: port) do
+    case client().send(cmd, host: host, port: port) do
       {:ok, res} ->
         {:ok, res}
 
@@ -143,5 +143,9 @@ defmodule Mpdex.Playlists do
           {:undefined, rest}
       end
     end)
+  end
+
+  defp client() do
+    Application.get_env(:mpdex, :mpd_client)
   end
 end
