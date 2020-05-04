@@ -1,1 +1,3 @@
-config :mpdex, :mpd_client, Mpdex.Client
+import Config
+
+config :mpdex, :mpd_client, Mpdex.SocketClient

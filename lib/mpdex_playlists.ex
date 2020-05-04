@@ -12,6 +12,15 @@ defmodule Mpdex.Playlists do
         |> Enum.reduce([], fn entry, acc ->
           case entry do
             [<<"playlist: ", list::binary>>, <<"Last-Modified: ", modified::binary>>] ->
+              modified =
+                case DateTime.from_iso8601(modified) do
+                  {:ok, date_time, _} ->
+                    date_time
+
+                  _ ->
+                    nil
+                end
+
               [[{:playlist, list}, {:last_modified, modified}] | acc]
 
             _ ->
