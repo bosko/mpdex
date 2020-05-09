@@ -43,7 +43,20 @@ defmodule Mpdex.Playlists do
           raw_songs
           |> Enum.reduce([], fn line, acc ->
             [file | raw_metadata] = String.split(line, "\n")
-            metadata = parse_metadata(raw_metadata) |> Enum.into(%{})
+            metadata =
+            parse_metadata(raw_metadata)
+            |> Enum.reduce(%{}, fn {key, val}, acc ->
+              case acc do
+                %{^key => existing} when is_binary(existing) ->
+                  Map.put(acc, key, [existing, val])
+
+                %{^key => existing} when is_list(existing) ->
+                  Map.put(acc, key, [val | existing])
+
+                _ ->
+                  Map.put(acc, key, val)
+              end
+            end)
 
             [[{:file, file}, {:metadata, metadata}] | acc]
           end)
@@ -146,7 +159,7 @@ defmodule Mpdex.Playlists do
           {:title, title}
 
         <<"Track: ", track::binary>> ->
-          {:tract, track}
+          {:track, track}
 
         rest ->
           {:undefined, rest}
