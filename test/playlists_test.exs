@@ -5,7 +5,7 @@ defmodule Mpdex.PlaylistsTest do
   test "gets the the list of play lists" do
     {:ok, modified, _} = DateTime.from_iso8601("2018-11-24T18:40:08Z")
 
-    assert Mpdex.Playlists.list("", "") == [[playlist: "Classic", last_modified: modified]]
+    assert Mpdex.Playlists.list() == [[playlist: "Classic", last_modified: modified]]
   end
 
   test "gets sons from the single list" do
@@ -29,38 +29,38 @@ defmodule Mpdex.PlaylistsTest do
         ]
       ]
 
-    assert Mpdex.Playlists.get("dummy", "", "") == {:ok, expected}
+    assert Mpdex.Playlists.get("dummy") == {:ok, expected}
   end
 
   test "sends command to load list" do
-    assert Mpdex.Playlists.load("dummy", "", "") == {:ok, "OK\n"}
+    assert Mpdex.Playlists.load("dummy") == {:ok, "OK\n"}
   end
 
   test "sends command to add url to list" do
-    assert Mpdex.Playlists.add_url_to_list("dummy", "http://example.com", "", "") == {:ok, "OK\n"}
+    assert Mpdex.Playlists.add_url_to_list("dummy", "http://example.com") == {:ok, "OK\n"}
   end
 
   test "sends command to clear list" do
-    assert Mpdex.Playlists.clear("dummy", "", "") == {:ok, "OK\n"}
+    assert Mpdex.Playlists.clear("dummy") == {:ok, "OK\n"}
   end
 
   test "sends command to delete song from list" do
-    assert Mpdex.Playlists.delete_song_at("dummy", 1, "", "") == {:ok, "OK\n"}
+    assert Mpdex.Playlists.delete_song_at("dummy", 1) == {:ok, "OK\n"}
   end
 
   test "sends command to move song" do
-    assert Mpdex.Playlists.move_song("dummy", 2, 1, "", "") == {:ok, "OK\n"}
+    assert Mpdex.Playlists.move_song("dummy", 2, 1) == {:ok, "OK\n"}
   end
 
   test "sends command to save queue to list" do
-    assert Mpdex.Playlists.save_queue_to_list("dummy_1", "", "") == {:ok, "OK\n"}
+    assert Mpdex.Playlists.save_queue_to_list("dummy_1") == {:ok, "OK\n"}
   end
 
   test "sends command to rename list" do
-    assert Mpdex.Playlists.rename("dummy", "old-dummy", "", "") == {:ok, "OK\n"}
+    assert Mpdex.Playlists.rename("dummy", "old-dummy") == {:ok, "OK\n"}
   end
 
   test "sends command to delete list" do
-    assert Mpdex.Playlists.remove("dummy", "", "") == {:ok, "OK\n"}
+    assert Mpdex.Playlists.remove("dummy") == {:ok, "OK\n"}
   end
 end

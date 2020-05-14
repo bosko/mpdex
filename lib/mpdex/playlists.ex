@@ -3,8 +3,8 @@ defmodule Mpdex.Playlists do
   Client for MPD (Music Player Daemon)
   """
 
-  def list(host, port) do
-    case client().send("listplaylists", host: host, port: port) do
+  def list do
+    case client().send("listplaylists") do
       {:ok, raw_lists} ->
         raw_lists
         |> String.split("\n")
@@ -34,8 +34,8 @@ defmodule Mpdex.Playlists do
     end
   end
 
-  def get(list_name, host, port) do
-    case client().send("listplaylistinfo #{list_name}", host: host, port: port) do
+  def get(list_name) do
+    case client().send("listplaylistinfo #{list_name}") do
       {:ok, content} ->
         [_ | raw_songs] = String.split(content, "file: ")
 
@@ -70,40 +70,40 @@ defmodule Mpdex.Playlists do
     end
   end
 
-  def load(list_name, host, port) do
-    send_simple_cmd("load #{list_name}", host, port)
+  def load(list_name) do
+    send_simple_cmd("load #{list_name}")
   end
 
-  def add_url_to_list(list_name, uri, host, port) do
-    send_simple_cmd("playlistadd #{list_name} #{uri}", host, port)
+  def add_url_to_list(list_name, uri) do
+    send_simple_cmd("playlistadd #{list_name} #{uri}")
   end
 
-  def clear(list_name, host, port) do
-    send_simple_cmd("playlistclear #{list_name}", host, port)
+  def clear(list_name) do
+    send_simple_cmd("playlistclear #{list_name}")
   end
 
-  def delete_song_at(list_name, position, host, port) do
-    send_simple_cmd("playlistdelete #{list_name} #{position}", host, port)
+  def delete_song_at(list_name, position) do
+    send_simple_cmd("playlistdelete #{list_name} #{position}")
   end
 
-  def move_song(list_name, from, to, host, port) do
-    send_simple_cmd("playlistmove #{list_name} #{from} #{to}", host, port)
+  def move_song(list_name, from, to) do
+    send_simple_cmd("playlistmove #{list_name} #{from} #{to}")
   end
 
-  def save_queue_to_list(list_name, host, port) do
-    send_simple_cmd("save #{list_name}", host, port)
+  def save_queue_to_list(list_name) do
+    send_simple_cmd("save #{list_name}")
   end
 
-  def rename(list_name, new_name, host, port) do
-    send_simple_cmd("rename #{list_name} #{new_name}", host, port)
+  def rename(list_name, new_name) do
+    send_simple_cmd("rename #{list_name} #{new_name}")
   end
 
-  def remove(list_name, host, port) do
-    send_simple_cmd("rm #{list_name}", host, port)
+  def remove(list_name) do
+    send_simple_cmd("rm #{list_name}")
   end
 
-  defp send_simple_cmd(cmd, host, port) do
-    case client().send(cmd, host: host, port: port) do
+  defp send_simple_cmd(cmd) do
+    case client().send(cmd) do
       {:ok, res} ->
         {:ok, res}
 

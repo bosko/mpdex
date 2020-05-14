@@ -4,5 +4,5 @@ defmodule Mpdex.Client do
   """
 
   @doc "Method for sending command to MPD server"
-  @callback send(cmd :: binary, options :: list()) :: {:ok, :any} | {:error, atom() | binary() | map()}
+  @callback send(cmd :: binary) :: {:ok, :any} | {:error, atom() | binary() | map()}
 end

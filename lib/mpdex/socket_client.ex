@@ -2,11 +2,11 @@ defmodule Mpdex.SocketClient do
   @behaviour Mpdex.Client
 
   @impl Mpdex.Client
-  def send(cmd, options \\ [])
+  def send(cmd)
 
-  def send(cmd, options) when is_binary(cmd) and is_list(options) do
-    host = Keyword.get(options, :host, "localhost")
-    port = Keyword.get(options, :port, 6600)
+  def send(cmd) when is_binary(cmd) do
+    host = Application.get_env(:mpdex, :host, "localhost")
+    port = Application.get_env(:mpdex, :port, 6600)
 
     case connect(host, port) do
       {:ok, socket, _version} ->
@@ -27,7 +27,7 @@ defmodule Mpdex.SocketClient do
     end
   end
 
-  def send(_cmd, _options) do
+  def send(_cmd, _server_address, _server_port) do
     {:eror, "Invalid arguments"}
   end
 

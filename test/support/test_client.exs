@@ -5,7 +5,7 @@ defmodule Mpdex.TestClient do
   @playlists_pattern ~r/[listplaylists | listplaylistinfo | load | playlistadd | playlistclear | playlistdelete | playlistmove | save | rename | rm](.*)/
 
   @impl Mpdex.Client
-  def send(cmd, _options) do
+  def send(cmd) do
     cond do
       Regex.match?(@playlists_pattern, cmd) ->
         playlist_cmd(cmd)
