@@ -23,6 +23,30 @@ defmodule Mpdex.TestClient do
       cmd == "listplaylistinfo dummy" ->
         File.read(Path.join(@playlists, "get.txt"))
 
+      cmd == "load dummy" ->
+        {:ok, "OK\n"}
+
+      cmd == "playlistadd dummy http://example.com" ->
+        {:ok, "OK\n"}
+
+      cmd == "playlistclear dummy" ->
+        {:ok, "OK\n"}
+
+      cmd == "playlistdelete dummy 1" ->
+        {:ok, "OK\n"}
+
+      cmd == "playlistmove dummy 2 1" ->
+        {:ok, "OK\n"}
+
+      cmd == "save dummy_1" ->
+        {:ok, "OK\n"}
+
+      cmd == "rename dummy old-dummy" ->
+        {:ok, "OK\n"}
+
+      cmd == "rm dummy" ->
+        {:ok, "OK\n"}
+
       true ->
         {:error, "Unknown playlist command"}
     end

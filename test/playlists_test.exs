@@ -31,4 +31,36 @@ defmodule Mpdex.PlaylistsTest do
 
     assert Mpdex.Playlists.get("dummy", "", "") == {:ok, expected}
   end
+
+  test "sends command to load list" do
+    assert Mpdex.Playlists.load("dummy", "", "") == {:ok, "OK\n"}
+  end
+
+  test "sends command to add url to list" do
+    assert Mpdex.Playlists.add_url_to_list("dummy", "http://example.com", "", "") == {:ok, "OK\n"}
+  end
+
+  test "sends command to clear list" do
+    assert Mpdex.Playlists.clear("dummy", "", "") == {:ok, "OK\n"}
+  end
+
+  test "sends command to delete song from list" do
+    assert Mpdex.Playlists.delete_song_at("dummy", 1, "", "") == {:ok, "OK\n"}
+  end
+
+  test "sends command to move song" do
+    assert Mpdex.Playlists.move_song("dummy", 2, 1, "", "") == {:ok, "OK\n"}
+  end
+
+  test "sends command to save queue to list" do
+    assert Mpdex.Playlists.save_queue_to_list("dummy_1", "", "") == {:ok, "OK\n"}
+  end
+
+  test "sends command to rename list" do
+    assert Mpdex.Playlists.rename("dummy", "old-dummy", "", "") == {:ok, "OK\n"}
+  end
+
+  test "sends command to delete list" do
+    assert Mpdex.Playlists.remove("dummy", "", "") == {:ok, "OK\n"}
+  end
 end
