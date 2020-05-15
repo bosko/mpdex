@@ -37,7 +37,7 @@ defmodule Mpdex.PlaylistsTest do
   end
 
   test "sends command to add url to list" do
-    assert Mpdex.Playlists.add_url_to_list("dummy", "http://example.com") == {:ok, "OK\n"}
+    assert Mpdex.Playlists.add_to_list("dummy", "http://example.com") == {:ok, "OK\n"}
   end
 
   test "sends command to clear list" do
@@ -61,6 +61,6 @@ defmodule Mpdex.PlaylistsTest do
   end
 
   test "sends command to delete list" do
-    assert Mpdex.Playlists.remove("dummy") == {:ok, "OK\n"}
+    assert Mpdex.Playlists.delete("dummy") == {:ok, "OK\n"}
   end
 end

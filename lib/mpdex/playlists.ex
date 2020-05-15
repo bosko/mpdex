@@ -74,7 +74,7 @@ defmodule Mpdex.Playlists do
     send_simple_cmd("load #{list_name}")
   end
 
-  def add_url_to_list(list_name, uri) do
+  def add_to_list(list_name, uri) do
     send_simple_cmd("playlistadd #{list_name} #{uri}")
   end
 
@@ -98,7 +98,7 @@ defmodule Mpdex.Playlists do
     send_simple_cmd("rename #{list_name} #{new_name}")
   end
 
-  def remove(list_name) do
+  def delete(list_name) do
     send_simple_cmd("rm #{list_name}")
   end
 
