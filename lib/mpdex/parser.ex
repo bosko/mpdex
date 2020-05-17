@@ -41,7 +41,7 @@ defmodule Mpdex.Parser do
         <<"Disc: ", disc::binary>> ->
           {:disc, disc}
 
-        <<"Duration: ", raw_duration::binary>> ->
+        <<"duration: ", raw_duration::binary>> ->
           duration =
             if String.contains?(raw_duration, ".") do
               raw_duration
@@ -54,6 +54,9 @@ defmodule Mpdex.Parser do
 
         <<"Genre: ", genre::binary>> ->
           {:genre, genre}
+
+        <<"Id: ", id::binary>> ->
+          {:id, id}
 
         <<"Last-Modified: ", last_modified::binary>> ->
           modified =
@@ -69,6 +72,9 @@ defmodule Mpdex.Parser do
 
         <<"Name: ", name::binary>> ->
           {:name, name}
+
+        <<"Pos: ", position::binary>> ->
+          {:position, String.to_integer(position)}
 
         <<"Time: ", time::binary>> ->
           {:time, String.to_integer(time)}
