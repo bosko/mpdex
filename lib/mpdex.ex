@@ -14,7 +14,7 @@ defmodule Mpdex do
     * `:host` - IP address on which MPD is
     * `:port` - port number on which MPD listens
 
-  # Example
+  ## Examples
 
     Mpdex.configure(host: "192.168.0.5", port: 6600)
 
