@@ -74,4 +74,73 @@ defmodule Mpdex do
   Deletes list
   """
   defdelegate delete(list_name), to: Mpdex.Playlists
+
+  @doc "Displays content of the queue"
+  defdelegate queue, to: Mpdex.Queue, as: :list
+
+  @doc """
+  Adds URI to the queue. If URI is directory it will be added
+  recursively. Otherwise single file or URL is added.
+  """
+  defdelegate add_to_queue(uri), to: Mpdex.Queue, as: :add
+
+  @doc "Clears the queue"
+  defdelegate clear_queue, to: Mpdex.Queue, as: :clear
+
+  @doc """
+  Deletes song or range of songs from the queue.
+
+  It accepts following options:
+
+    * `:start` - start position
+    * `:end` - end position (exclusive)
+
+  If both arguments are given all songs in the range will be
+  removed, otherwise removes song on the position `:start`.
+
+  ## Examples
+
+    iex> Mpdex.remove_song(start: 1) # deletes song on position 1
+    {:ok, "OK\n}
+
+    iex> Mpdex.remove_song(start: 0, end: 3) # deletes songs 0, 1 and 2
+    {:ok, "OK\n}
+
+  """
+  defdelegate remove_song(options), to: Mpdex.Queue, as: :delete
+
+  @doc """
+  Moves song or range of songs to the given position.
+
+  It accepts the following options:
+
+    * `:start` - start position
+    * `:end` - end position (song on `end` position is excluded)
+    * `:to` - position to which songs will be moved
+
+  If both arguments are given all songs in the range will be
+  moved, otherwise moves song on the position `:start`.
+
+  ## Examples
+
+    iex> Mpdex.move_song(start: 1, to: 0)
+    {:ok, "OK\n}
+
+    iex> Mpdex.move_song(start: 0, end: 3, to: 5)
+    {:ok, "OK\n}
+
+  """
+  defdelegate move_song(options), to: Mpdex.Queue, as: :move
+
+  @doc """
+  Shuffles queue.
+
+  It accepts the following options:
+
+    * `:start` - start of range to be shuffled
+    * `:end` - end of range to be shuffled
+
+  Without options shuffles entire queue.
+  """
+  defdelegate shuffle_queue(options), to: Mpdex.Queue, as: :shuffle
 end
