@@ -47,7 +47,7 @@ defmodule Mpdex do
   @doc """
   Clears the play list.
   """
-  defdelegate clear(list_name), to: Mpdex.Playlists
+  defdelegate clear_list(list_name), to: Mpdex.Playlists, as: :clear
 
   @doc """
   Deletes song at position from the play list.
@@ -85,7 +85,7 @@ defmodule Mpdex do
   defdelegate add_to_queue(uri), to: Mpdex.Queue, as: :add
 
   @doc "Clears the queue"
-  defdelegate clear_queue, to: Mpdex.Queue, as: :clear
+  defdelegate clear, to: Mpdex.Queue
 
   @doc """
   Deletes song or range of songs from the queue.
@@ -143,4 +143,71 @@ defmodule Mpdex do
   Without options shuffles entire queue.
   """
   defdelegate shuffle_queue(options), to: Mpdex.Queue, as: :shuffle
+
+  defdelegate idle(subsystem), to: Mpdex.Status
+
+  @doc "Returns statistics."
+  defdelegate statistics, to: Mpdex.Status
+
+  @doc "Returns current playback status."
+  defdelegate status, to: Mpdex.Status
+
+  @doc "Sets crossfading between songs."
+  defdelegate crossfade(seconds), to: Mpdex.Playback
+
+  @doc "Plays next song in the queue."
+  defdelegate next, to: Mpdex.Playback
+
+  @doc "Pauses playback."
+  defdelegate pause, to: Mpdex.Playback
+
+  @doc "Resumes playback."
+  defdelegate resume, to: Mpdex.Playback
+
+  @doc """
+  Begins playing the playlist at song position or with song ID.
+
+  iex> Mpdex.play(:position, 2)
+  iex> Mpdex.play(:id, 23)
+  """
+  defdelegate play(what, val), to: Mpdex.Playback
+
+  @doc "Plays previous song in the queue."
+  defdelegate previous, to: Mpdex.Playback
+
+  @doc "Turns random off."
+  defdelegate random_off, to: Mpdex.Playback
+
+  @doc "Turns random on."
+  defdelegate random_on, to: Mpdex.Playback
+
+  @doc "Turns repeat off."
+  defdelegate repeat_off, to: Mpdex.Playback
+
+  @doc "Turns repeat on."
+  defdelegate repeat_on, to: Mpdex.Playback
+
+  @doc """
+  Seeks current song to the position time (in seconds; fractions
+  allowed).
+  """
+  defdelegate seek(time), to: Mpdex.Playback
+
+  @doc """
+  Seeks forward current song to the position time (in seconds;
+  fractions allowed) relative to current position.
+  """
+  defdelegate forward(time), to: Mpdex.Playback
+
+  @doc """
+  Seeks backward current song to the position time (in seconds;
+  fractions allowed) relative to current position.
+  """
+  defdelegate backward(time), to: Mpdex.Playback
+
+  @doc "Stops playing"
+  defdelegate stop, to: Mpdex.Playback
+
+  @doc "Sets playback volume (from 0 to 100)"
+  defdelegate volume(vol), to: Mpdex.Playback
 end

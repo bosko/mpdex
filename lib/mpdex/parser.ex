@@ -115,4 +115,23 @@ defmodule Mpdex.Parser do
       end
     end)
   end
+
+  def parse_key_value(raw_value) do
+    raw_value
+    |> String.split("\n")
+    |> Enum.map(fn val ->
+      case String.split(val, ": ") do
+        ["audio", value] ->
+          [sample, bits, channels] = String.split(value, ":")
+          {:audio, [{:samplerate, sample}, {:bits, bits}, {:channels, channels}]}
+
+        [status, value] ->
+          {String.to_atom(status), value}
+
+        _ ->
+          nil
+      end
+    end)
+    |> Enum.reject(&(is_nil(&1)))
+  end
 end
