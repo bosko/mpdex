@@ -1,4 +1,29 @@
 defmodule Mpdex.Parser do
+  def parse_list_of_play_lists(raw_lists) do
+    raw_lists
+    |> String.split("\n")
+    |> Enum.chunk_every(2)
+    |> Enum.reduce([], fn entry, acc ->
+      case entry do
+        [<<"playlist: ", list::binary>>, <<"Last-Modified: ", modified::binary>>] ->
+          modified =
+            case DateTime.from_iso8601(modified) do
+              {:ok, date_time, _} ->
+                date_time
+
+              _ ->
+                nil
+            end
+
+          [[{:playlist, list}, {:last_modified, modified}] | acc]
+
+        _ ->
+          acc
+      end
+    end)
+    |> Enum.reverse()
+  end
+
   def parse_play_list(raw_list) do
     [_ | raw_songs] = String.split(raw_list, "file: ")
 
