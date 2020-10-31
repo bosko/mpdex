@@ -15,7 +15,7 @@ defmodule Mpdex.Parser do
                 nil
             end
 
-          [[{:playlist, list}, {:last_modified, modified}] | acc]
+          [%{playlist: list, last_modified: modified} | acc]
 
         _ ->
           acc
@@ -46,8 +46,9 @@ defmodule Mpdex.Parser do
                 Map.put(acc, key, val)
             end
           end)
+          |> fill_missing_metadata(file)
 
-        [[{:file, file}, {:metadata, metadata}] | acc]
+        [%{file: file, metadata: metadata} | acc]
       end)
       |> Enum.reverse()
 
@@ -133,5 +134,54 @@ defmodule Mpdex.Parser do
       end
     end)
     |> Enum.reject(&is_nil(&1))
+  end
+
+  defp fill_missing_metadata(metadata, file) do
+    [artist, album, title] = extract_from_file_path(file)
+
+    metadata =
+      if false == Map.has_key?(metadata, :artist) do
+        Map.put(metadata, :artist, artist)
+      else
+        metadata
+      end
+
+    metadata =
+      if false == Map.has_key?(metadata, :album) do
+        Map.put(metadata, :album, album)
+      else
+        metadata
+      end
+
+    if false == Map.has_key?(metadata, :title) do
+      Map.put(metadata, :title, title)
+    else
+      metadata
+    end
+  end
+
+  defp extract_from_file_path(file_path) do
+    if String.starts_with?(file_path, "http") do
+      ["Unknown", "Unknown", file_path]
+    else
+      paths = Path.dirname(file_path) |> String.split("/")
+
+      [artist, album] =
+        case length(paths) do
+          1 ->
+            [hd(paths), "Unknown"]
+
+          2 ->
+            paths
+
+          _ ->
+            [artist | [album | _]] = paths
+            [artist, album]
+        end
+
+      name = Path.basename(file_path, Path.extname(file_path))
+
+      [artist, album, name]
+    end
   end
 end
