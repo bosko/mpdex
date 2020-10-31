@@ -30,28 +30,28 @@ defmodule Mpdex.Parser do
     songs =
       raw_songs
       |> Enum.reduce([], fn line, acc ->
-      [file | raw_metadata] = String.split(line, "\n")
+        [file | raw_metadata] = String.split(line, "\n")
 
-      metadata =
-        parse_metadata(raw_metadata)
-        |> Enum.reduce(%{}, fn {key, val}, acc ->
-        case acc do
-          %{^key => existing} when is_binary(existing) ->
-            Map.put(acc, key, [existing, val])
+        metadata =
+          parse_metadata(raw_metadata)
+          |> Enum.reduce(%{}, fn {key, val}, acc ->
+            case acc do
+              %{^key => existing} when is_binary(existing) ->
+                Map.put(acc, key, [existing, val])
 
-          %{^key => existing} when is_list(existing) ->
-            Map.put(acc, key, [val | existing])
+              %{^key => existing} when is_list(existing) ->
+                Map.put(acc, key, [val | existing])
 
-          _ ->
-            Map.put(acc, key, val)
-        end
-      end)
+              _ ->
+                Map.put(acc, key, val)
+            end
+          end)
 
         [[{:file, file}, {:metadata, metadata}] | acc]
-    end)
-    |> Enum.reverse()
+      end)
+      |> Enum.reverse()
 
-      {:ok, songs}
+    {:ok, songs}
   end
 
   defp parse_metadata(metadata) do
@@ -132,6 +132,6 @@ defmodule Mpdex.Parser do
           nil
       end
     end)
-    |> Enum.reject(&(is_nil(&1)))
+    |> Enum.reject(&is_nil(&1))
   end
 end
