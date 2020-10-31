@@ -153,8 +153,15 @@ defmodule Mpdex.Parser do
         metadata
       end
 
-    if false == Map.has_key?(metadata, :title) do
-      Map.put(metadata, :title, title)
+    metadata =
+      if false == Map.has_key?(metadata, :title) do
+        Map.put(metadata, :title, title)
+      else
+        metadata
+      end
+
+    if false == Map.has_key?(metadata, :time) do
+      Map.put(metadata, :time, 0)
     else
       metadata
     end
