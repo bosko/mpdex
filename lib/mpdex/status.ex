@@ -9,7 +9,7 @@ defmodule Mpdex.Status do
         Mpdex.Parser.parse_key_value(raw_stats)
 
       _ ->
-        []
+        %{}
     end
   end
 
@@ -19,7 +19,7 @@ defmodule Mpdex.Status do
         Mpdex.Parser.parse_key_value(raw_status)
 
       _ ->
-        []
+        %{}
     end
   end
 
