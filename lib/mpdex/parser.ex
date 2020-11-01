@@ -134,6 +134,7 @@ defmodule Mpdex.Parser do
       end
     end)
     |> Enum.reject(&is_nil(&1))
+    |> Enum.into(%{})
   end
 
   defp fill_missing_metadata(metadata, file) do
