@@ -3,7 +3,7 @@ defmodule Mpdex.Status do
     client().send("idle #{subsystem}")
   end
 
-  def statistics do
+  def statistics() do
     case client().send("stats") do
       {:ok, raw_stats} ->
         Mpdex.Parser.parse_key_value(raw_stats)
@@ -13,7 +13,7 @@ defmodule Mpdex.Status do
     end
   end
 
-  def status do
+  def status() do
     case client().send("status") do
       {:ok, raw_status} ->
         Mpdex.Parser.parse_key_value(raw_status)
