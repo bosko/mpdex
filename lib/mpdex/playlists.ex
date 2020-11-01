@@ -9,7 +9,7 @@ defmodule Mpdex.Playlists do
         Mpdex.Parser.parse_list_of_play_lists(raw_lists)
 
       _ ->
-        []
+        %{}
     end
   end
 
@@ -19,7 +19,7 @@ defmodule Mpdex.Playlists do
         Mpdex.Parser.parse_play_list(content)
 
       _ ->
-        []
+        %{}
     end
   end
 
