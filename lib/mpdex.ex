@@ -150,7 +150,8 @@ defmodule Mpdex do
   defdelegate statistics, to: Mpdex.Status
 
   @doc "Returns current playback status."
-  defdelegate status, to: Mpdex.Status
+  @spec status() :: map()
+  defdelegate status(), to: Mpdex.Status
 
   @doc "Sets crossfading between songs."
   defdelegate crossfade(seconds), to: Mpdex.Playback

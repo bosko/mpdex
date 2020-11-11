@@ -13,6 +13,7 @@ defmodule Mpdex.Status do
     end
   end
 
+  @spec status() :: map()
   def status() do
     case client().send("status") do
       {:ok, raw_status} ->
