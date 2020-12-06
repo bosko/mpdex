@@ -1,6 +1,8 @@
 defmodule Mpdex do
   use GenServer
 
+  require Logger
+
   def start_link(host: host, port: port, name: name) do
     GenServer.start_link(__MODULE__, %{host: host, port: port}, name: name)
   end
@@ -39,13 +41,16 @@ defmodule Mpdex do
            host: host,
            port: port,
            socket: socket,
-           mpd_version: version,
-           clients: []
+           mpd_version: version
          }}
 
       {:error, error} ->
         {:ok, %{status: :disconnected, host: host, port: port, socket: nil, error: error}}
     end
+  end
+
+  def subscribe() do
+    Registry.register(Mpdex.Registry, "player", [])
   end
 
   @doc """
@@ -445,11 +450,20 @@ defmodule Mpdex do
       case what do
         :status ->
           status = Mpdex.Status.status()
-          Enum.each(state.clients, fn client -> send(client, {:status, status}) end)
+          Registry.dispatch(Mpdex.Registry, "player", fn entries ->
+            for {pid, _} <- entries, do: send(pid, {:status, status})
+          end)
 
         :queue ->
-          queue = Mpdex.Queue.list()
-          Enum.each(state.clients, fn client -> send(client, {:queue, queue}) end)
+          case Mpdex.Queue.list() do
+            {:ok, queue} ->
+              Registry.dispatch(Mpdex.Registry, "player", fn entries ->
+                for {pid, _} <- entries, do: send(pid, {:queue, queue})
+              end)
+
+            {:error, _} ->
+              Logger.info("Error fetching queue")
+          end
       end
     end)
 
