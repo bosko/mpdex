@@ -515,6 +515,12 @@ defmodule Mpdex do
     {:noreply, state}
   end
 
+  @impl true
+  def handle_info(:reset_connection, state) do
+    Logger.info("Resetting TCP connection")
+
+    :gen_tcp.shutdown(Map.get(state, :socket), :read_write)
+
     {:noreply, state}
   end
 
