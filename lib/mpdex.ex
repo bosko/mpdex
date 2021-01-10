@@ -30,6 +30,7 @@ defmodule Mpdex do
     Application.put_env(:mpdex, :host, host)
     Application.put_env(:mpdex, :port, port)
 
+    Logger.info("Initializing Mpdex...")
     case connect(host, port) do
       {:ok, socket, version} ->
         :inet.setopts(socket, active: true)
@@ -50,6 +51,7 @@ defmodule Mpdex do
   end
 
   def subscribe() do
+    Logger.info("Subscribing to 'player' notifications")
     Registry.register(Mpdex.Registry, "player", [])
   end
 
@@ -414,6 +416,8 @@ defmodule Mpdex do
 
   @impl true
   def handle_info({:tcp, socket, data}, state) do
+    Logger.info("Received: #{:binary.list_to_bin(data)}")
+
     :binary.list_to_bin(data)
     |> String.split("\n")
     |> Enum.reduce([], fn chg_info, acc ->
@@ -450,6 +454,8 @@ defmodule Mpdex do
       case what do
         :status ->
           status = Mpdex.Status.status()
+          Logger.info("Dispatching status: #{inspect status}")
+
           Registry.dispatch(Mpdex.Registry, "player", fn entries ->
             for {pid, _} <- entries, do: send(pid, {:status, status})
           end)
@@ -457,6 +463,7 @@ defmodule Mpdex do
         :queue ->
           case Mpdex.Queue.list() do
             {:ok, queue} ->
+              Logger.info("Dispatching queue: #{inspect queue}")
               Registry.dispatch(Mpdex.Registry, "player", fn entries ->
                 for {pid, _} <- entries, do: send(pid, {:queue, queue})
               end)
@@ -467,6 +474,7 @@ defmodule Mpdex do
       end
     end)
 
+    Logger.info("Sending 'idle' command")
     :gen_tcp.send(socket, "idle\n")
 
     {:noreply, state}
@@ -499,6 +507,7 @@ defmodule Mpdex do
   end
 
   defp connect(host, port) when is_binary(host) and is_integer(port) do
+    Logger.info("Connecting to #{host}:#{port}")
     with {:ok, socket} <- :gen_tcp.connect(String.to_charlist(host), port, active: false),
          {:ok, resp} <- :gen_tcp.recv(socket, 0) do
       case to_string(resp) do
