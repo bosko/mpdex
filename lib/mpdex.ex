@@ -481,16 +481,24 @@ defmodule Mpdex do
   end
 
   @impl true
-  def handle_info({:tcp_closed, _socket}, state) do
+  def handle_info({:tcp_closed, socket}, state) do
+    Logger.info("TCP socket closed. Reconnecting...")
+
+    :gen_tcp.shutdown(socket, :read_write)
+
     state =
       case connect(state.host, state.port) do
         {:ok, socket, _version} ->
           :inet.setopts(socket, active: true)
           :gen_tcp.send(socket, "idle\n")
 
+          Logger.info("Setting new socket into the state.")
+
           Map.put(state, :socket, socket)
 
         {:error, error} ->
+          Logger.error("Error connecting: #{inspect error}")
+
           Map.merge(state, %{
             status: :disconnected,
             socket: nil,
