@@ -502,7 +502,11 @@ defmodule Mpdex do
   end
 
   @impl true
-  def handle_info({:tcp_error, _socket, _reason}, state) do
+  def handle_info({:tcp_error, _socket, reason}, state) do
+    Logger.error("TCP error: #{inspect reason}")
+    {:noreply, state}
+  end
+
     {:noreply, state}
   end
 
